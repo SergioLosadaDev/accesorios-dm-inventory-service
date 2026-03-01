@@ -1,0 +1,1 @@
+# accesorios-dm-inventory-service

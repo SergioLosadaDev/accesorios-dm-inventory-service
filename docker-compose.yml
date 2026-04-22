@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  inventory-service:
+    build: .
+    container_name: accesorios-inventory-service
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      # Configuración para conectar a la BD que está en el otro repositorio
+      # Usamos 'host.docker.internal' para acceder a la BD que corre en el host
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/accesorios_db
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=admin123
+      - SPRING_DATASOURCE_DRIVER-CLASS-NAME=org.postgresql.Driver
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA=inventario
+    # Para Linux, permite conectar al host desde el contenedor
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

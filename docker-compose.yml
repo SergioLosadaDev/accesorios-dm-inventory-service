@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  inventory-service:
+    build: .
+    container_name: accesorios-inventory-service
+    restart: always
+    ports:
+      - "8082:8082"
+    environment:
+      - DB_URL=jdbc:postgresql://host.docker.internal:5432/accesorios_dm?currentSchema=catalogo,inventario
+      - DB_USERNAME=svc_inventory
+      - DB_PASSWORD=${DB_PASSWORD}
+      - PORT=8082
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - accesorios-network
+
+networks:
+  accesorios-network:
+    external: true
+    name: accesorios-network

@@ -19,7 +19,8 @@ spring:
           time_zone: UTC
 
   liquibase:
-    enabled: false
+    enabled: ${LIQUIBASE_ENABLED:false}
+    change-log: classpath:db/changelog/db.changelog-master.yaml
 
 server:
   port: ${PORT:8082}

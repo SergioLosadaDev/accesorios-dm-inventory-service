@@ -6,7 +6,7 @@ import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
 @TestPropertySource(properties = {
-    "spring.datasource.url=jdbc:tc:postgresql:15:///accesorios_dm?currentSchema=catalogo,inventario",
+    "spring.datasource.url=jdbc:tc:postgresql:15:///accesorios_dm?TC_INITSCRIPT=init.sql",
     "spring.jpa.hibernate.ddl-auto=create-drop",
     "spring.liquibase.enabled=false"
 })

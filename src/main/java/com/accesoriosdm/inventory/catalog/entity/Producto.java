@@ -7,6 +7,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -53,4 +55,8 @@ public class Producto {
     @UpdateTimestamp
     @Column(nullable = false)
     private Instant actualizadoEn;
+
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ImagenProducto> imagenes = new ArrayList<>();
 }

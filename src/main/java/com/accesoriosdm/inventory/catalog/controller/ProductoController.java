@@ -1,5 +1,6 @@
 package com.accesoriosdm.inventory.catalog.controller;
 
+import com.accesoriosdm.inventory.catalog.dto.ImagenProductoResponse;
 import com.accesoriosdm.inventory.catalog.dto.ProductoCreateRequest;
 import com.accesoriosdm.inventory.catalog.dto.ProductoDetailResponse;
 import com.accesoriosdm.inventory.catalog.dto.ProductoResponse;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import java.util.UUID;
 
@@ -37,6 +40,11 @@ public class ProductoController {
     @GetMapping("/{id}")
     public ProductoDetailResponse obtener(@PathVariable UUID id) {
         return service.obtener(id);
+    }
+
+    @GetMapping("/{id}/images")
+    public List<ImagenProductoResponse> listarImagenes(@PathVariable UUID id) {
+        return service.listarImagenes(id);
     }
 
     @PostMapping

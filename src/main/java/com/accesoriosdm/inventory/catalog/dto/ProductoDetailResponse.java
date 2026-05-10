@@ -16,7 +16,7 @@ public record ProductoDetailResponse(
         boolean activo,
         CategoriaInfoResponse categoria,
         MaterialInfoResponse material,
-        List<Object> imagenes,
+        List<ImagenProductoResponse> imagenes,
         Instant creadoEn,
         Instant actualizadoEn
 ) {
@@ -30,7 +30,7 @@ public record ProductoDetailResponse(
                 p.getActivo(),
                 CategoriaInfoResponse.from(p.getCategoria()),
                 p.getMaterial() != null ? MaterialInfoResponse.from(p.getMaterial()) : null,
-                List.of(), // populated in HU-DEV-SALB_15 (image management)
+                p.getImagenes().stream().map(ImagenProductoResponse::from).toList(),
                 p.getCreadoEn(),
                 p.getActualizadoEn()
         );

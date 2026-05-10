@@ -1,11 +1,13 @@
 package com.accesoriosdm.inventory.catalog.service;
 
+import com.accesoriosdm.inventory.catalog.dto.ImagenProductoResponse;
 import com.accesoriosdm.inventory.catalog.dto.ProductoCreateRequest;
 import com.accesoriosdm.inventory.catalog.dto.ProductoDetailResponse;
 import com.accesoriosdm.inventory.catalog.dto.ProductoResponse;
 import com.accesoriosdm.inventory.catalog.dto.ProductoUpdateRequest;
 import com.accesoriosdm.inventory.catalog.entity.Producto;
 import com.accesoriosdm.inventory.catalog.repository.CategoriaRepository;
+import com.accesoriosdm.inventory.catalog.repository.ImagenProductoRepository;
 import com.accesoriosdm.inventory.catalog.repository.MaterialRepository;
 import com.accesoriosdm.inventory.catalog.repository.ProductoRepository;
 import com.accesoriosdm.inventory.catalog.specification.ProductoSpecification;
@@ -19,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -26,6 +29,7 @@ import java.util.UUID;
 public class ProductoServiceImpl implements ProductoService {
 
     private final ProductoRepository productoRepository;
+    private final ImagenProductoRepository imagenProductoRepository;
     private final CategoriaRepository categoriaRepository;
     private final MaterialRepository materialRepository;
 
@@ -41,7 +45,19 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     @Transactional(readOnly = true)
     public ProductoDetailResponse obtener(UUID id) {
-        return ProductoDetailResponse.from(findOrThrow(id));
+        Producto p = productoRepository.findByIdWithImagenes(id)
+                .orElseThrow(() -> new ProductNotFoundException(id.toString()));
+        return ProductoDetailResponse.from(p);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ImagenProductoResponse> listarImagenes(UUID productoId) {
+        if (!productoRepository.existsById(productoId)) {
+            throw new ProductNotFoundException(productoId.toString());
+        }
+        return imagenProductoRepository.findByProductoIdOrderByOrdenAsc(productoId)
+                .stream().map(ImagenProductoResponse::from).toList();
     }
 
     @Override

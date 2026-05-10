@@ -23,6 +23,7 @@ server:
 management:
   endpoints:
     web:
+      base-path: /api/v1
       exposure:
         include: health,info
   endpoint:

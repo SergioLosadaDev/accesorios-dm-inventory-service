@@ -3,16 +3,14 @@ package com.accesoriosdm.inventory.catalog.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
-@Table(name = "productos", schema = "catalogo")
+@Table(name = "producto", schema = "catalogo")
 @Getter
 @Setter
 @Builder
@@ -21,40 +19,38 @@ import java.util.UUID;
 public class Producto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_producto")
+    private Integer id;
 
-    @Column(nullable = false, unique = true, length = 50)
-    private String sku;
-
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false, length = 150)
     private String nombre;
 
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
-    @Column(nullable = false, precision = 12, scale = 2)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoria_id", nullable = false)
-    private Categoria categoria;
+    @Column(insertable = false, updatable = false)
+    @Builder.Default
+    private Integer stock = 0;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "material_id")
-    private Material material;
+    @CreationTimestamp
+    @Column(name = "fecha_creacion", nullable = false, updatable = false)
+    private LocalDateTime fechaCreacion;
 
     @Column(nullable = false)
     @Builder.Default
-    private Boolean activo = true;
+    private Boolean estado = true;
 
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private Instant creadoEn;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_categoria", nullable = false)
+    private Categoria categoria;
 
-    @UpdateTimestamp
-    @Column(nullable = false)
-    private Instant actualizadoEn;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_material", nullable = false)
+    private Material material;
 
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

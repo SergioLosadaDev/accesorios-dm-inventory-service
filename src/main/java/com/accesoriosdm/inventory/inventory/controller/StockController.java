@@ -8,8 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/v1/inventory")
 @RequiredArgsConstructor
@@ -18,7 +16,7 @@ public class StockController {
     private final StockService stockService;
 
     @GetMapping("/stock/{productId}")
-    public StockResponse obtenerStock(@PathVariable UUID productId) {
+    public StockResponse obtenerStock(@PathVariable Integer productId) {
         return stockService.obtenerStock(productId);
     }
 

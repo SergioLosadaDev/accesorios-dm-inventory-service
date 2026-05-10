@@ -16,8 +16,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/v1/inventory/movements")
@@ -28,16 +27,14 @@ public class MovimientoController {
 
     @GetMapping
     public Page<MovimientoHistorialResponse> listar(
-            @RequestParam(required = false) UUID productoId,
-            @RequestParam(required = false) UUID tipoMovimientoId,
-            @RequestParam(required = false) UUID responsableId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant fechaDesde,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant fechaHasta,
-            @PageableDefault(size = 20, sort = "registradoEn", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(required = false) Integer productoId,
+            @RequestParam(required = false) Integer tipoMovimientoId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaDesde,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaHasta,
+            @PageableDefault(size = 20, sort = "fechaMovimiento", direction = Sort.Direction.DESC) Pageable pageable,
             HttpServletRequest httpRequest) {
         requireAdmin(httpRequest);
-        return movimientoService.listar(productoId, tipoMovimientoId, responsableId,
-                fechaDesde, fechaHasta, pageable);
+        return movimientoService.listar(productoId, tipoMovimientoId, fechaDesde, fechaHasta, pageable);
     }
 
     @PostMapping
@@ -46,8 +43,7 @@ public class MovimientoController {
             @Valid @RequestBody RegistrarMovimientoRequest request,
             HttpServletRequest httpRequest) {
         requireAdminOrVendedor(httpRequest);
-        UUID responsableId = parseUserId(httpRequest);
-        return movimientoService.registrar(request, responsableId);
+        return movimientoService.registrar(request);
     }
 
     private void requireAdmin(HttpServletRequest request) {
@@ -61,16 +57,6 @@ public class MovimientoController {
         String roles = request.getHeader("X-User-Roles");
         if (roles == null || (!roles.contains("ADMIN") && !roles.contains("ROLE_VENDEDOR"))) {
             throw new ForbiddenException("Se requiere rol ADMIN o ROLE_VENDEDOR para esta operación.");
-        }
-    }
-
-    private UUID parseUserId(HttpServletRequest request) {
-        String userId = request.getHeader("X-User-Id");
-        if (userId == null || userId.isBlank()) return null;
-        try {
-            return UUID.fromString(userId);
-        } catch (IllegalArgumentException e) {
-            return null;
         }
     }
 }

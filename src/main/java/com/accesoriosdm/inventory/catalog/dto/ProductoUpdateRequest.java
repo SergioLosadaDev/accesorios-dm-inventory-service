@@ -4,11 +4,10 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 public record ProductoUpdateRequest(
 
-        @Size(max = 200, message = "El nombre no puede superar los 200 caracteres")
+        @Size(max = 150, message = "El nombre no puede superar los 150 caracteres")
         String nombre,
 
         @Size(max = 2000, message = "La descripción no puede superar los 2000 caracteres")
@@ -17,9 +16,9 @@ public record ProductoUpdateRequest(
         @DecimalMin(value = "0.01", message = "El precio debe ser mayor a 0")
         BigDecimal precio,
 
-        UUID categoriaId,
+        Integer categoriaId,
 
-        UUID materialId,
+        Integer materialId,
 
-        Boolean activo
+        Boolean estado
 ) {}

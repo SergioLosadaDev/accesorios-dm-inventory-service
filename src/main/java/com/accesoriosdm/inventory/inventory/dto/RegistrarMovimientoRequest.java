@@ -2,21 +2,20 @@ package com.accesoriosdm.inventory.inventory.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-
-import java.util.UUID;
+import jakarta.validation.constraints.Size;
 
 public record RegistrarMovimientoRequest(
 
         @NotNull(message = "El productoId es obligatorio.")
-        UUID productoId,
+        Integer productoId,
 
         @NotNull(message = "El tipoMovimientoId es obligatorio.")
-        UUID tipoMovimientoId,
+        Integer tipoMovimientoId,
 
         @NotNull(message = "La cantidad es obligatoria.")
         @Positive(message = "La cantidad debe ser un número entero positivo.")
         Integer cantidad,
 
-        @NotNull(message = "El motivo es obligatorio.")
-        String motivo
+        @Size(max = 100, message = "La referencia no puede superar los 100 caracteres.")
+        String referencia
 ) {}

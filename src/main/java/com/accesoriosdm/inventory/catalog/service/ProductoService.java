@@ -9,20 +9,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface ProductoService {
 
-    Page<ProductoResponse> listar(UUID categoriaId, UUID materialId,
-                                  String nombre, Boolean activo, Pageable pageable);
+    Page<ProductoResponse> listar(Integer categoriaId, Integer materialId,
+                                  String nombre, Boolean estado, Pageable pageable);
 
-    ProductoDetailResponse obtener(UUID id);
+    ProductoDetailResponse obtener(Integer id);
 
-    List<ImagenProductoResponse> listarImagenes(UUID productoId);
+    List<ImagenProductoResponse> listarImagenes(Integer productoId);
 
     ProductoDetailResponse crear(ProductoCreateRequest request);
 
-    ProductoDetailResponse actualizar(UUID id, ProductoUpdateRequest request);
+    ProductoDetailResponse actualizar(Integer id, ProductoUpdateRequest request);
 
-    void eliminar(UUID id);
+    void eliminar(Integer id);
 }

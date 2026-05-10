@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/v1/catalog/products")
 @RequiredArgsConstructor
@@ -29,21 +27,21 @@ public class ProductoController {
 
     @GetMapping
     public Page<ProductoResponse> listar(
-            @RequestParam(required = false) UUID categoryId,
-            @RequestParam(required = false) UUID materialId,
+            @RequestParam(required = false) Integer categoryId,
+            @RequestParam(required = false) Integer materialId,
             @RequestParam(required = false) String nombre,
-            @RequestParam(required = false) Boolean activo,
+            @RequestParam(required = false) Boolean estado,
             @PageableDefault(size = 20) Pageable pageable) {
-        return service.listar(categoryId, materialId, nombre, activo, pageable);
+        return service.listar(categoryId, materialId, nombre, estado, pageable);
     }
 
     @GetMapping("/{id}")
-    public ProductoDetailResponse obtener(@PathVariable UUID id) {
+    public ProductoDetailResponse obtener(@PathVariable Integer id) {
         return service.obtener(id);
     }
 
     @GetMapping("/{id}/images")
-    public List<ImagenProductoResponse> listarImagenes(@PathVariable UUID id) {
+    public List<ImagenProductoResponse> listarImagenes(@PathVariable Integer id) {
         return service.listarImagenes(id);
     }
 
@@ -58,7 +56,7 @@ public class ProductoController {
 
     @PutMapping("/{id}")
     public ProductoDetailResponse actualizar(
-            @PathVariable UUID id,
+            @PathVariable Integer id,
             @Valid @RequestBody ProductoUpdateRequest request,
             HttpServletRequest httpRequest) {
         requireAdmin(httpRequest);
@@ -68,7 +66,7 @@ public class ProductoController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(
-            @PathVariable UUID id,
+            @PathVariable Integer id,
             HttpServletRequest httpRequest) {
         requireAdmin(httpRequest);
         service.eliminar(id);

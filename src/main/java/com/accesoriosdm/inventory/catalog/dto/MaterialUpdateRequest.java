@@ -4,11 +4,9 @@ import jakarta.validation.constraints.Size;
 
 public record MaterialUpdateRequest(
 
-        @Size(max = 100, message = "El nombre no puede superar los 100 caracteres")
+        @Size(max = 80, message = "El nombre no puede superar los 80 caracteres")
         String nombre,
 
         @Size(max = 500, message = "La descripción no puede superar los 500 caracteres")
-        String descripcion,
-
-        Boolean activo
+        String descripcion
 ) {}

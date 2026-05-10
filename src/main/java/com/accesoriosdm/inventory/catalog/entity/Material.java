@@ -6,14 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.Instant;
-import java.util.UUID;
 
 @Entity
-@Table(name = "materiales", schema = "catalogo")
+@Table(name = "material", schema = "catalogo")
 @Getter
 @Setter
 @Builder
@@ -22,24 +17,13 @@ import java.util.UUID;
 public class Material {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_material")
+    private Integer id;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 80)
     private String nombre;
 
     @Column(columnDefinition = "TEXT")
     private String descripcion;
-
-    @Column(nullable = false)
-    @Builder.Default
-    private Boolean activo = true;
-
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private Instant creadoEn;
-
-    @UpdateTimestamp
-    @Column(nullable = false)
-    private Instant actualizadoEn;
 }

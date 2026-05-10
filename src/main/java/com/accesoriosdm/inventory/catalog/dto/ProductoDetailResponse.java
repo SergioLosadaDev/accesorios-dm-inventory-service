@@ -3,36 +3,33 @@ package com.accesoriosdm.inventory.catalog.dto;
 import com.accesoriosdm.inventory.catalog.entity.Producto;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 public record ProductoDetailResponse(
-        UUID id,
-        String sku,
+        Integer id,
         String nombre,
         String descripcion,
         BigDecimal precio,
-        boolean activo,
+        Integer stock,
+        boolean estado,
         CategoriaInfoResponse categoria,
         MaterialInfoResponse material,
         List<ImagenProductoResponse> imagenes,
-        Instant creadoEn,
-        Instant actualizadoEn
+        LocalDateTime fechaCreacion
 ) {
     public static ProductoDetailResponse from(Producto p) {
         return new ProductoDetailResponse(
                 p.getId(),
-                p.getSku(),
                 p.getNombre(),
                 p.getDescripcion(),
                 p.getPrecio(),
-                p.getActivo(),
+                p.getStock(),
+                p.getEstado(),
                 CategoriaInfoResponse.from(p.getCategoria()),
-                p.getMaterial() != null ? MaterialInfoResponse.from(p.getMaterial()) : null,
+                MaterialInfoResponse.from(p.getMaterial()),
                 p.getImagenes().stream().map(ImagenProductoResponse::from).toList(),
-                p.getCreadoEn(),
-                p.getActualizadoEn()
+                p.getFechaCreacion()
         );
     }
 }

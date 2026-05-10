@@ -4,36 +4,32 @@ import com.accesoriosdm.inventory.inventory.entity.InventarioMovimiento;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public final class MovimientoSpecification {
 
     private MovimientoSpecification() {}
 
     public static Specification<InventarioMovimiento> withFilters(
-            UUID productoId, UUID tipoMovimientoId, UUID responsableId,
-            Instant fechaDesde, Instant fechaHasta) {
+            Integer productoId, Integer tipoMovimientoId,
+            LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
 
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             if (productoId != null) {
-                predicates.add(cb.equal(root.get("productoId"), productoId));
+                predicates.add(cb.equal(root.get("idProducto"), productoId));
             }
             if (tipoMovimientoId != null) {
                 predicates.add(cb.equal(root.get("tipoMovimiento").get("id"), tipoMovimientoId));
             }
-            if (responsableId != null) {
-                predicates.add(cb.equal(root.get("responsableId"), responsableId));
-            }
             if (fechaDesde != null) {
-                predicates.add(cb.greaterThanOrEqualTo(root.get("registradoEn"), fechaDesde));
+                predicates.add(cb.greaterThanOrEqualTo(root.get("fechaMovimiento"), fechaDesde));
             }
             if (fechaHasta != null) {
-                predicates.add(cb.lessThanOrEqualTo(root.get("registradoEn"), fechaHasta));
+                predicates.add(cb.lessThanOrEqualTo(root.get("fechaMovimiento"), fechaHasta));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

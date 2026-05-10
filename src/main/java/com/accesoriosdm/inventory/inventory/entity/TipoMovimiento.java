@@ -3,8 +3,6 @@ package com.accesoriosdm.inventory.inventory.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.UUID;
-
 @Entity
 @Table(name = "tipo_movimiento", schema = "inventario")
 @Getter
@@ -15,12 +13,13 @@ import java.util.UUID;
 public class TipoMovimiento {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_tipo_movimiento")
+    private Integer id;
 
-    @Column(nullable = false, unique = true, length = 10)
-    private String codigo;
-
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, unique = true, length = 50)
     private String nombre;
+
+    @Column(columnDefinition = "TEXT")
+    private String descripcion;
 }

@@ -1,12 +1,10 @@
 package com.accesoriosdm.inventory.inventory.dto;
 
-import java.time.Instant;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 public record StockResponse(
-        UUID productoId,
-        String sku,
+        Integer productoId,
         String nombre,
         int cantidadDisponible,
-        Instant actualizadoEn
+        LocalDateTime fechaCreacion
 ) {}

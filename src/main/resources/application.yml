@@ -3,24 +3,19 @@ spring:
     name: inventory-service
 
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/accesorios_dm?currentSchema=catalogo,inventario}
-    username: ${DB_USERNAME:svc_inventory}
-    password: ${DB_PASSWORD:changeme}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/accesorios_dm_db?currentSchema=catalogo,inventario}
+    username: ${DB_USERNAME:admin}
+    password: ${DB_PASSWORD:admin123}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     show-sql: false
     open-in-view: false
-    properties:
-      hibernate:
-        jdbc:
-          time_zone: UTC
 
   liquibase:
-    enabled: ${LIQUIBASE_ENABLED:false}
-    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: false
 
 server:
   port: ${PORT:8082}

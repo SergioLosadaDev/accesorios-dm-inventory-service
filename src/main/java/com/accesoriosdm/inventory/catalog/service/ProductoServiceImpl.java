@@ -13,7 +13,6 @@ import com.accesoriosdm.inventory.catalog.repository.ProductoRepository;
 import com.accesoriosdm.inventory.catalog.specification.ProductoSpecification;
 import com.accesoriosdm.inventory.exception.CategoryNotFoundException;
 import com.accesoriosdm.inventory.exception.MaterialNotFoundException;
-import com.accesoriosdm.inventory.exception.ProductAlreadyExistsException;
 import com.accesoriosdm.inventory.exception.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -35,16 +33,16 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProductoResponse> listar(UUID categoriaId, UUID materialId,
-                                         String nombre, Boolean activo, Pageable pageable) {
+    public Page<ProductoResponse> listar(Integer categoriaId, Integer materialId,
+                                         String nombre, Boolean estado, Pageable pageable) {
         return productoRepository
-                .findAll(ProductoSpecification.withFilters(categoriaId, materialId, nombre, activo), pageable)
+                .findAll(ProductoSpecification.withFilters(categoriaId, materialId, nombre, estado), pageable)
                 .map(ProductoResponse::from);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ProductoDetailResponse obtener(UUID id) {
+    public ProductoDetailResponse obtener(Integer id) {
         Producto p = productoRepository.findByIdWithImagenes(id)
                 .orElseThrow(() -> new ProductNotFoundException(id.toString()));
         return ProductoDetailResponse.from(p);
@@ -52,7 +50,7 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ImagenProductoResponse> listarImagenes(UUID productoId) {
+    public List<ImagenProductoResponse> listarImagenes(Integer productoId) {
         if (!productoRepository.existsById(productoId)) {
             throw new ProductNotFoundException(productoId.toString());
         }
@@ -63,26 +61,19 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     @Transactional
     public ProductoDetailResponse crear(ProductoCreateRequest request) {
-        if (productoRepository.existsBySku(request.sku())) {
-            throw new ProductAlreadyExistsException(request.sku());
-        }
-
         var categoria = categoriaRepository.findById(request.categoriaId())
                 .orElseThrow(() -> new CategoryNotFoundException(request.categoriaId().toString()));
 
-        var material = request.materialId() != null
-                ? materialRepository.findById(request.materialId())
-                        .orElseThrow(() -> new MaterialNotFoundException(request.materialId().toString()))
-                : null;
+        var material = materialRepository.findById(request.materialId())
+                .orElseThrow(() -> new MaterialNotFoundException(request.materialId().toString()));
 
         var producto = Producto.builder()
-                .sku(request.sku())
                 .nombre(request.nombre())
                 .descripcion(request.descripcion())
                 .precio(request.precio())
                 .categoria(categoria)
                 .material(material)
-                .activo(true)
+                .estado(true)
                 .build();
 
         return ProductoDetailResponse.from(productoRepository.save(producto));
@@ -90,13 +81,13 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     @Transactional
-    public ProductoDetailResponse actualizar(UUID id, ProductoUpdateRequest request) {
+    public ProductoDetailResponse actualizar(Integer id, ProductoUpdateRequest request) {
         var producto = findOrThrow(id);
 
         if (request.nombre() != null) producto.setNombre(request.nombre());
         if (request.descripcion() != null) producto.setDescripcion(request.descripcion());
         if (request.precio() != null) producto.setPrecio(request.precio());
-        if (request.activo() != null) producto.setActivo(request.activo());
+        if (request.estado() != null) producto.setEstado(request.estado());
 
         if (request.categoriaId() != null) {
             producto.setCategoria(categoriaRepository.findById(request.categoriaId())
@@ -112,13 +103,13 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     @Transactional
-    public void eliminar(UUID id) {
+    public void eliminar(Integer id) {
         var producto = findOrThrow(id);
-        producto.setActivo(false);
+        producto.setEstado(false);
         productoRepository.save(producto);
     }
 
-    private Producto findOrThrow(UUID id) {
+    private Producto findOrThrow(Integer id) {
         return productoRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id.toString()));
     }

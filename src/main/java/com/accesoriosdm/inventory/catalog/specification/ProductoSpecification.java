@@ -6,14 +6,13 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public final class ProductoSpecification {
 
     private ProductoSpecification() {}
 
     public static Specification<Producto> withFilters(
-            UUID categoriaId, UUID materialId, String nombre, Boolean activo) {
+            Integer categoriaId, Integer materialId, String nombre, Boolean estado) {
 
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -30,8 +29,8 @@ public final class ProductoSpecification {
                         "%" + nombre.toLowerCase() + "%"
                 ));
             }
-            if (activo != null) {
-                predicates.add(cb.equal(root.get("activo"), activo));
+            if (estado != null) {
+                predicates.add(cb.equal(root.get("estado"), estado));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

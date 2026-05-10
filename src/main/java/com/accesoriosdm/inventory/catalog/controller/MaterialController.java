@@ -14,8 +14,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/v1/catalog/materials")
 @RequiredArgsConstructor
@@ -30,7 +28,7 @@ public class MaterialController {
     }
 
     @GetMapping("/{id}")
-    public MaterialResponse obtener(@PathVariable UUID id) {
+    public MaterialResponse obtener(@PathVariable Integer id) {
         return service.obtener(id);
     }
 
@@ -45,7 +43,7 @@ public class MaterialController {
 
     @PutMapping("/{id}")
     public MaterialResponse actualizar(
-            @PathVariable UUID id,
+            @PathVariable Integer id,
             @Valid @RequestBody MaterialUpdateRequest request,
             HttpServletRequest httpRequest) {
         requireAdmin(httpRequest);
@@ -55,7 +53,7 @@ public class MaterialController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(
-            @PathVariable UUID id,
+            @PathVariable Integer id,
             HttpServletRequest httpRequest) {
         requireAdmin(httpRequest);
         service.eliminar(id);

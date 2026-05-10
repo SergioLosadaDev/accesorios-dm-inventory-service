@@ -7,17 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
-import java.util.UUID;
 
 public interface ProductoRepository
-        extends JpaRepository<Producto, UUID>, JpaSpecificationExecutor<Producto> {
+        extends JpaRepository<Producto, Integer>, JpaSpecificationExecutor<Producto> {
 
-    boolean existsBySku(String sku);
+    boolean existsByCategoriaId(Integer categoriaId);
 
-    boolean existsByCategoriaId(UUID categoriaId);
-
-    boolean existsByMaterialId(UUID materialId);
+    boolean existsByMaterialId(Integer materialId);
 
     @Query("SELECT p FROM Producto p LEFT JOIN FETCH p.imagenes WHERE p.id = :id")
-    Optional<Producto> findByIdWithImagenes(@Param("id") UUID id);
+    Optional<Producto> findByIdWithImagenes(@Param("id") Integer id);
 }

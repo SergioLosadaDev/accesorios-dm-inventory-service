@@ -3,10 +3,8 @@ package com.accesoriosdm.inventory.catalog.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.UUID;
-
 @Entity
-@Table(name = "imagenes_producto", schema = "catalogo")
+@Table(name = "imagen_producto", schema = "catalogo")
 @Getter
 @Setter
 @Builder
@@ -15,21 +13,18 @@ import java.util.UUID;
 public class ImagenProducto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_imagen")
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "producto_id", nullable = false)
+    @JoinColumn(name = "id_producto", nullable = false)
     private Producto producto;
 
-    @Column(nullable = false, length = 500)
-    private String url;
-
-    @Column(name = "es_principal", nullable = false)
-    @Builder.Default
-    private Boolean esPrincipal = false;
+    @Column(name = "url_imagen", nullable = false, columnDefinition = "TEXT")
+    private String urlImagen;
 
     @Column(nullable = false)
     @Builder.Default
-    private Integer orden = 0;
+    private Integer orden = 1;
 }

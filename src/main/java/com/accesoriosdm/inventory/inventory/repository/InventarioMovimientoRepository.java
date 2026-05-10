@@ -10,9 +10,10 @@ import java.util.UUID;
 public interface InventarioMovimientoRepository extends JpaRepository<InventarioMovimiento, UUID> {
 
     @Query(value = """
-            SELECT COALESCE(SUM(CASE WHEN tipo = 'ENTRADA' THEN cantidad ELSE -cantidad END), 0)
-            FROM inventario.inventario_movimiento
-            WHERE producto_id = :productoId
+            SELECT COALESCE(SUM(CASE WHEN t.codigo = 'ENTRADA' THEN m.cantidad ELSE -m.cantidad END), 0)
+            FROM inventario.inventario_movimiento m
+            JOIN inventario.tipo_movimiento t ON t.id = m.tipo_movimiento_id
+            WHERE m.producto_id = :productoId
             """, nativeQuery = true)
     int calcularStock(@Param("productoId") UUID productoId);
 }

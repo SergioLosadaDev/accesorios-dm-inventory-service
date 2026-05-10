@@ -23,15 +23,18 @@ public class InventarioMovimiento {
     @Column(name = "producto_id", nullable = false)
     private UUID productoId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
-    private TipoMovimiento tipo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tipo_movimiento_id", nullable = false)
+    private TipoMovimiento tipoMovimiento;
 
     @Column(nullable = false)
     private Integer cantidad;
 
-    @Column(length = 100)
-    private String referencia;
+    @Column(length = 200)
+    private String motivo;
+
+    @Column(name = "responsable_id")
+    private UUID responsableId;
 
     @CreationTimestamp
     @Column(name = "registrado_en", nullable = false, updatable = false)

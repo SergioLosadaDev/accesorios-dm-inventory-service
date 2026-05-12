@@ -1,21 +1,21 @@
 services:
   inventory-service:
     build: .
-    container_name: accesorios-dm-inventory-service
+    container_name: accesorios-dm-inventory-service-prod
     restart: unless-stopped
     ports:
-      - "8081:8081"
+      - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://accesorios-dm-postgres-qa:5432/accesorios_dm_db
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://accesorios-dm-postgres-prod:5432/accesorios_dm_db
       - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=admin123
       - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
-      - SERVER_PORT=8081
+      - SERVER_PORT=8080
     networks:
       - accesorios-dm-net
 
 networks:
   accesorios-dm-net:
     external: true
-    name: accesorios-dm-database_accesorios-network-qa
+    name: accesorios-dm-database_accesorios-network-prod

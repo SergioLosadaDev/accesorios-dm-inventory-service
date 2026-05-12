@@ -31,12 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### OS ###
-.DS_Store
-
-### Environment — solo los .example se versionan ###
-.env
-.env.dev
-.env.qa
-.env.prod

@@ -43,9 +43,9 @@ git clone https://github.com/SergioLosadaDev/accesorios-dm-database.git
 cd accesorios-dm-database
 ```
 
-### Levantar la base de datos (ambiente qa)
+### Levantar la base de datos (ambiente main)
 ```bash
-git checkout qa
+git checkout main
 docker-compose -f docker-compose.yml up -d
 ```
 
@@ -66,7 +66,7 @@ El microservicio utiliza las siguientes variables (configuradas en docker-compos
 |SPRING_DATASOURCE_URL	|jdbc:postgresql://accesorios-dm-postgres-dev:5432/accesorios_dm_db	|Conexión a BD|
 |SPRING_DATASOURCE_USERNAME	|admin	|Usuario de BD|
 |SPRING_DATASOURCE_PASSWORD	|admin123	|Contraseña de BD|
-|SERVER_PORT	|8082	|Puerto del servicio|
+|SERVER_PORT	|8080	|Puerto del servicio|
 
 ## Archivo de configuración local (opcional)
 
@@ -75,7 +75,7 @@ Si deseas ejecutar sin Docker, crea src/main/resources/application-local.yml:
 ```bash
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/accesorios_dm_db
+    url: jdbc:postgresql://localhost:5432/accesorios_dm_db
     username: admin
     password: admin123
 ```
@@ -123,7 +123,7 @@ java -jar target/inventory-service-0.0.1-SNAPSHOT.jar
 ### Health check
 
 ```bash
-curl http://localhost:8081/api/v1/health
+curl http://localhost:8080/api/v1/health
 ```
 
 **Respuesta esperada:**
@@ -133,7 +133,7 @@ curl http://localhost:8081/api/v1/health
 
 ### Obtener categorías
 ```bash
-curl http://localhost:8081/api/v1/categorias
+curl http://localhost:8080/api/v1/categorias
 ```
 
 **Respuesta esperada:**
@@ -143,7 +143,7 @@ curl http://localhost:8081/api/v1/categorias
 
 ### Obtener productos
 ```bash
-curl http://localhost:8081/api/v1/productos
+curl http://localhost:8080/api/v1/productos
 ```
 
 **Respuesta esperada:**

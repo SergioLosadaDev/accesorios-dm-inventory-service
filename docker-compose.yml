@@ -1,23 +1,97 @@
-version: "3.9"
+# Inventory Service — accesorios-dm-inventory-service
+#
+# Uso develop (standalone — incluye postgres + migraciones):
+#   cp .env.dev.example .env
+#   docker compose up -d
+#
+# Prerequisito para migraciones: accesorios-dm-database debe estar clonado
+# en la ruta definida por DATABASE_REPO_PATH (por defecto: ../accesorios-dm-database).
+#
+# Solo el servicio (postgres externo ya corriendo en la red):
+#   docker compose up -d inventory-service
+#
+# Uso junto a otros servicios (red compartida automática):
+#   Ambos servicios deben declarar la misma red accesorios-dm-net-{ENVIRONMENT}
 
 services:
-  inventory-service:
-    build: .
-    container_name: accesorios-inventory-service
-    restart: always
-    ports:
-      - "8082:8082"
+
+  # ── Base de datos (solo para desarrollo local standalone) ───────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: accesorios-dm-postgres-${ENVIRONMENT:-dev}
+    restart: unless-stopped
     environment:
-      - DB_URL=jdbc:postgresql://host.docker.internal:5432/accesorios_dm?currentSchema=catalogo,inventario
-      - DB_USERNAME=svc_inventory
-      - DB_PASSWORD=${DB_PASSWORD}
-      - PORT=8082
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      POSTGRES_DB: ${POSTGRES_DB:-accesorios_dm_db}
+      POSTGRES_USER: ${POSTGRES_ADMIN_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:-admin123}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_ADMIN_USER:-admin} -d ${POSTGRES_DB:-accesorios_dm_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     networks:
-      - accesorios-network
+      - accesorios-dm-net
+
+  # ── Migraciones Liquibase (ejecuta una vez y termina) ───────────────────────
+  # Requiere que accesorios-dm-database esté clonado en DATABASE_REPO_PATH.
+  liquibase:
+    image: liquibase/liquibase:4.25-alpine
+    container_name: accesorios-dm-liquibase-${ENVIRONMENT:-dev}
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ${DATABASE_REPO_PATH:-../accesorios-dm-database}:/liquibase/changelog:ro
+    working_dir: /liquibase/changelog
+    command: >
+      liquibase update
+      --url=jdbc:postgresql://postgres:5432/${POSTGRES_DB:-accesorios_dm_db}
+      --username=${POSTGRES_ADMIN_USER:-admin}
+      --password=${POSTGRES_ADMIN_PASSWORD:-admin123}
+      --changelog-file=changelog-master.yaml
+      --log-level=INFO
+    networks:
+      - accesorios-dm-net
+
+  # ── Inventory Service ───────────────────────────────────────────────────────
+  inventory-service:
+    build:
+      context: .
+      target: runtime
+    image: ghcr.io/sergiolosadadev/accesorios-dm-inventory-service:${IMAGE_TAG:-dev}
+    container_name: accesorios-dm-inventory-${ENVIRONMENT:-dev}
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_URL: jdbc:postgresql://${DB_HOST:-postgres}:${DB_PORT:-5432}/${POSTGRES_DB:-accesorios_dm_db}?currentSchema=catalogo,inventario
+      DB_USERNAME: ${DB_USERNAME:-admin}
+      DB_PASSWORD: ${DB_PASSWORD}
+      PORT: "8082"
+    ports:
+      - "${INVENTORY_PORT:-8082}:8082"
+    depends_on:
+      liquibase:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8082/api/v1/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    networks:
+      - accesorios-dm-net
+
+volumes:
+  postgres-data:
+    name: accesorios-dm-postgres-data-${ENVIRONMENT:-dev}
 
 networks:
-  accesorios-network:
-    external: true
-    name: accesorios-network
+  accesorios-dm-net:
+    name: accesorios-dm-net-${ENVIRONMENT:-dev}
+    driver: bridge

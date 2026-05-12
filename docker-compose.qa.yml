@@ -1,0 +1,23 @@
+# Override QA — accesorios-dm-inventory-service
+#
+# Uso:
+#   cp .env.qa.example .env.qa
+#   # completar .env.qa con credenciales de QA
+#   docker compose -f docker-compose.yml -f docker-compose.qa.yml --env-file .env.qa up -d
+
+services:
+  postgres:
+    ports: []
+    restart: always
+
+  inventory-service:
+    environment:
+      SPRING_JPA_SHOW_SQL: "false"
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+          cpus: "0.5"
+        reservations:
+          memory: 256m

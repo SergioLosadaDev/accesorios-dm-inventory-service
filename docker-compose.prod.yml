@@ -1,0 +1,32 @@
+# Override Producción — accesorios-dm-inventory-service
+#
+# Uso:
+#   # IMAGE_TAG y credenciales vienen del pipeline CI/CD o secrets del servidor
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# IMPORTANTE: en producción NUNCA se construye desde código fuente.
+# La imagen debe estar publicada en el registry antes de ejecutar este comando.
+# La base de datos en producción es externa — no se levanta postgres localmente.
+
+services:
+  postgres:
+    profiles: ["disabled"]
+
+  liquibase:
+    profiles: ["disabled"]
+
+  inventory-service:
+    build: null
+    image: ghcr.io/sergiolosadadev/accesorios-dm-inventory-service:${IMAGE_TAG:?IMAGE_TAG es requerido en produccion}
+    environment:
+      SPRING_JPA_SHOW_SQL: "false"
+    ports: []
+    restart: always
+    depends_on: {}
+    deploy:
+      resources:
+        limits:
+          memory: 768m
+          cpus: "1.0"
+        reservations:
+          memory: 384m

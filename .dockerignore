@@ -1,0 +1,14 @@
+target/
+.mvn/wrapper/maven-wrapper.jar
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.log
+.git
+.gitignore
+README.md
+CONTRIBUTING.md
+.idea/
+*.iml
+.DS_Store

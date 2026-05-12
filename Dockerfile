@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
@@ -26,18 +25,3 @@ ENTRYPOINT ["java", \
   "-XX:+UseContainerSupport", \
   "-XX:MaxRAMPercentage=75.0", \
   "-jar", "app.jar"]
-=======
-FROM eclipse-temurin:21-jdk-alpine AS builder
-WORKDIR /build
-COPY mvnw mvnw.cmd pom.xml ./
-COPY .mvn .mvn
-RUN ./mvnw dependency:go-offline -q
-COPY src ./src
-RUN ./mvnw clean package -DskipTests -q
-
-FROM eclipse-temurin:21-jre-alpine AS runtime
-WORKDIR /app
-COPY --from=builder /build/target/*.jar app.jar
-EXPOSE 8082
-ENTRYPOINT ["java", "-jar", "app.jar"]
->>>>>>> b4883ed0b5faca54e1ebb9465472557e808ca36f

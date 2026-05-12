@@ -6,12 +6,14 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.11</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
+
 	<groupId>com.accesoriosdm</groupId>
 	<artifactId>inventory-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>inventory-service</name>
+<<<<<<< HEAD
 	<description>Inventory Service for Accesorios DM</description>
 	<url/>
 	<licenses>
@@ -26,9 +28,14 @@
 		<tag/>
 		<url/>
 	</scm>
+=======
+	<description>Accesorios DM — Inventory Service</description>
+
+>>>>>>> b4883ed0b5faca54e1ebb9465472557e808ca36f
 	<properties>
-		<java.version>17</java.version>
+		<java.version>21</java.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -46,6 +53,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -53,13 +64,35 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
+<<<<<<< HEAD
+=======
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+		</dependency>
+
+		<dependency>
+>>>>>>> b4883ed0b5faca54e1ebb9465472557e808ca36f
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+<<<<<<< HEAD
+=======
+
+>>>>>>> b4883ed0b5faca54e1ebb9465472557e808ca36f
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -77,6 +110,7 @@
 						</exclude>
 					</excludes>
 				</configuration>
+<<<<<<< HEAD
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -113,6 +147,8 @@
 						</configuration>
 					</execution>
 				</executions>
+=======
+>>>>>>> b4883ed0b5faca54e1ebb9465472557e808ca36f
 			</plugin>
 		</plugins>
 	</build>

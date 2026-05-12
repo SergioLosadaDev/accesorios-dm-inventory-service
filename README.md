@@ -43,9 +43,9 @@ git clone https://github.com/SergioLosadaDev/accesorios-dm-database.git
 cd accesorios-dm-database
 ```
 
-### Levantar la base de datos (ambiente develop)
+### Levantar la base de datos (ambiente qa)
 ```bash
-git checkout develop
+git checkout qa
 docker-compose -f docker-compose.yml up -d
 ```
 
@@ -53,7 +53,7 @@ docker-compose -f docker-compose.yml up -d
 ```bash
 docker ps | findstr "postgres"
 ```
-**Debes ver: accesorios-dm-postgres-dev corriendo en el puerto 5434.**
+**Debes ver: accesorios-dm-postgres-qa corriendo en el puerto 5433.**
 
 # Configuración del Microservicio
 
@@ -75,7 +75,7 @@ Si deseas ejecutar sin Docker, crea src/main/resources/application-local.yml:
 ```bash
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5434/accesorios_dm_db
+    url: jdbc:postgresql://localhost:5433/accesorios_dm_db
     username: admin
     password: admin123
 ```
@@ -123,7 +123,7 @@ java -jar target/inventory-service-0.0.1-SNAPSHOT.jar
 ### Health check
 
 ```bash
-curl http://localhost:8082/api/v1/health
+curl http://localhost:8081/api/v1/health
 ```
 
 **Respuesta esperada:**
@@ -133,7 +133,7 @@ curl http://localhost:8082/api/v1/health
 
 ### Obtener categorías
 ```bash
-curl http://localhost:8082/api/v1/categorias
+curl http://localhost:8081/api/v1/categorias
 ```
 
 **Respuesta esperada:**
@@ -143,7 +143,7 @@ curl http://localhost:8082/api/v1/categorias
 
 ### Obtener productos
 ```bash
-curl http://localhost:8082/api/v1/productos
+curl http://localhost:8081/api/v1/productos
 ```
 
 **Respuesta esperada:**
@@ -292,7 +292,7 @@ Nota: Dentro de la red Docker, la BD siempre escucha en el puerto 5432.
 # Crear rama para nueva funcionalidad
 git checkout develop
 git pull origin develop
-git checkout -b HU-DEV-JSA-XX-nombre
+git checkout -b HU-{ambiente}-{desarrollador}-XX-nombre
 
 # Hacer cambios...
 git add .

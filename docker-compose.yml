@@ -1,23 +1,21 @@
-version: "3.9"
-
 services:
   inventory-service:
     build: .
-    container_name: accesorios-inventory-service
-    restart: always
+    container_name: accesorios-dm-inventory-service-prod
+    restart: unless-stopped
     ports:
-      - "8082:8082"
+      - "8080:8080"
     environment:
-      - DB_URL=jdbc:postgresql://host.docker.internal:5432/accesorios_dm?currentSchema=catalogo,inventario
-      - DB_USERNAME=svc_inventory
-      - DB_PASSWORD=${DB_PASSWORD}
-      - PORT=8082
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://accesorios-dm-postgres-prod:5432/accesorios_dm_db
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=admin123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SERVER_PORT=8080
     networks:
-      - accesorios-network
+      - accesorios-dm-net
 
 networks:
-  accesorios-network:
+  accesorios-dm-net:
     external: true
-    name: accesorios-network
+    name: accesorios-dm-database_accesorios-network-prod

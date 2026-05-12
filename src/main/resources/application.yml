@@ -3,7 +3,7 @@ spring:
     name: inventory-service
   
   datasource:
-    url: jdbc:postgresql://accesorios-dm-postgres-qa:5432/accesorios_dm_db
+    url: jdbc:postgresql://accesorios-dm-postgres-prod:5432/accesorios_dm_db
     username: admin
     password: admin123
     driver-class-name: org.postgresql.Driver
@@ -26,7 +26,7 @@ spring:
       fail-on-empty-beans: false
 
 server:
-  port: 8081
+  port: 8080
   servlet:
     context-path: /api/v1
 

@@ -1,36 +1,51 @@
 spring:
   application:
     name: inventory-service
-
+  
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/accesorios_dm_db?currentSchema=catalogo,inventario}
-    username: ${DB_USERNAME:admin}
-    password: ${DB_PASSWORD:admin123}
+    url: jdbc:postgresql://accesorios-dm-postgres-dev:5432/accesorios_dm_db
+    username: admin
+    password: admin123
     driver-class-name: org.postgresql.Driver
-
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 2
+  
   jpa:
     hibernate:
-      ddl-auto: none
-    show-sql: false
-    open-in-view: false
-
-  liquibase:
-    enabled: false
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+  
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
 
 server:
-  port: ${PORT:8082}
+  port: 8082
+  servlet:
+    context-path: /api/v1
+
+# Configuración de almacenamiento de imágenes
+app:
+  storage:
+    images-path: ./src/main/resources/static/images/products
+
+logging:
+  level:
+    com.accesoriosdm.inventory: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 management:
   endpoints:
     web:
-      base-path: /api/v1
       exposure:
         include: health,info
   endpoint:
     health:
       show-details: always
-
-logging:
-  level:
-    root: INFO
-    com.accesoriosdm.inventory: DEBUG

@@ -1,20 +1,19 @@
-# ── Stage 1: builder ──────────────────────────────────────────────────────────
-FROM eclipse-temurin:21-jdk-alpine AS builder
-WORKDIR /build
-COPY mvnw pom.xml ./
-COPY .mvn .mvn
-RUN chmod +x mvnw && ./mvnw dependency:go-offline -q
-COPY src ./src
-RUN ./mvnw clean package -DskipTests -q
+FROM eclipse-temurin:17-jre-alpine
 
-# ── Stage 2: runtime ──────────────────────────────────────────────────────────
-FROM eclipse-temurin:21-jre-alpine AS runtime
 WORKDIR /app
 
+# Instalar wget para healthcheck
+RUN apk add --no-cache wget
+
+# Crear usuario no root
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-COPY --from=builder /build/target/*.jar app.jar
+# Copiar el JAR
+COPY target/inventory-service-0.0.1-SNAPSHOT.jar app.jar
+
+# Cambiar propietario
 RUN chown appuser:appgroup app.jar
+
 USER appuser
 
 EXPOSE 8082

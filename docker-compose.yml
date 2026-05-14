@@ -16,6 +16,6 @@ services:
       - accesorios-dm-net-dev
 
 networks:
-  accesorios-dm-net:
+  accesorios-dm-net-dev:
     external: true
     name: accesorios-dm-database_accesorios-network-dev

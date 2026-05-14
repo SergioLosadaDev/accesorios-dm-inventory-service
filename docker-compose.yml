@@ -1,7 +1,7 @@
 services:
   inventory-service:
     build: .
-    container_name: accesorios-dm-inventory-service
+    container_name: accesorios-dm-inventory-service-dev
     restart: unless-stopped
     ports:
       - "8082:8082"
@@ -13,9 +13,9 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
       - SERVER_PORT=8082
     networks:
-      - accesorios-dm-net
+      - accesorios-dm-net-dev
 
 networks:
-  accesorios-dm-net:
+  accesorios-dm-net-dev:
     external: true
     name: accesorios-dm-database_accesorios-network-dev

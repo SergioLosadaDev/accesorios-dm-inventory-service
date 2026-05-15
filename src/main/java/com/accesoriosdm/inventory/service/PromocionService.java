@@ -1,0 +1,86 @@
+package com.accesoriosdm.inventory.service;
+
+import com.accesoriosdm.inventory.dto.PromocionDTO;
+import com.accesoriosdm.inventory.entity.Promocion;
+import com.accesoriosdm.inventory.repository.PromocionRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class PromocionService {
+
+    private final PromocionRepository promocionRepository;
+
+    @Transactional(readOnly = true)
+    public List<PromocionDTO> getAllPromociones() {
+        return promocionRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public PromocionDTO getPromocionById(Integer id) {
+        Promocion promocion = promocionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Promoción no encontrada"));
+        return convertToDTO(promocion);
+    }
+
+    @Transactional
+    public PromocionDTO createPromocion(PromocionDTO dto) {
+        Promocion promocion = convertToEntity(dto);
+        Promocion saved = promocionRepository.save(promocion);
+        return convertToDTO(saved);
+    }
+
+    @Transactional
+    public PromocionDTO updatePromocion(Integer id, PromocionDTO dto) {
+        Promocion existing = promocionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Promoción no encontrada"));
+        
+        existing.setNombre(dto.getNombre());
+        existing.setDescripcion(dto.getDescripcion());
+        existing.setPorcentajeDescuento(dto.getPorcentajeDescuento());
+        existing.setFechaInicio(dto.getFechaInicio());
+        existing.setFechaFin(dto.getFechaFin());
+        existing.setActivo(dto.getActivo());
+        
+        Promocion updated = promocionRepository.save(existing);
+        return convertToDTO(updated);
+    }
+
+    @Transactional
+    public void deletePromocion(Integer id) {
+        promocionRepository.deleteById(id);
+    }
+
+    private PromocionDTO convertToDTO(Promocion p) {
+        PromocionDTO dto = new PromocionDTO();
+        dto.setIdPromocion(p.getIdPromocion());
+        dto.setNombre(p.getNombre());
+        dto.setDescripcion(p.getDescripcion());
+        dto.setPorcentajeDescuento(p.getPorcentajeDescuento());
+        dto.setFechaInicio(p.getFechaInicio());
+        dto.setFechaFin(p.getFechaFin());
+        dto.setActivo(p.getActivo());
+        dto.setFechaCreacion(p.getFechaCreacion());
+        return dto;
+    }
+
+    private Promocion convertToEntity(PromocionDTO dto) {
+        Promocion p = new Promocion();
+        p.setNombre(dto.getNombre());
+        p.setDescripcion(dto.getDescripcion());
+        p.setPorcentajeDescuento(dto.getPorcentajeDescuento());
+        p.setFechaInicio(dto.getFechaInicio());
+        p.setFechaFin(dto.getFechaFin());
+        p.setActivo(dto.getActivo());
+        return p;
+    }
+}

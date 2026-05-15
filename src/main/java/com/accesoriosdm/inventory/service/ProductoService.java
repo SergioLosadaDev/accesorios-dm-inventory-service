@@ -1,20 +1,36 @@
 package com.accesoriosdm.inventory.service;
 
-import com.accesoriosdm.inventory.dto.*;
-import com.accesoriosdm.inventory.entity.*;
-import com.accesoriosdm.inventory.exception.ResourceNotFoundException;
-import com.accesoriosdm.inventory.repository.*;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.accesoriosdm.inventory.dto.CategoriaDTO;
+import com.accesoriosdm.inventory.dto.ImagenProductoDTO;
+import com.accesoriosdm.inventory.dto.MaterialDTO;
+import com.accesoriosdm.inventory.dto.ProductoDTO;
+import com.accesoriosdm.inventory.dto.ProductoResumenDTO;
+import com.accesoriosdm.inventory.dto.PromocionDTO;
+import com.accesoriosdm.inventory.entity.Categoria;
+import com.accesoriosdm.inventory.entity.ImagenProducto;
+import com.accesoriosdm.inventory.entity.Material;
+import com.accesoriosdm.inventory.entity.Producto;
+import com.accesoriosdm.inventory.entity.Promocion;
+import com.accesoriosdm.inventory.exception.ResourceNotFoundException;
+import com.accesoriosdm.inventory.repository.CategoriaRepository;
+import com.accesoriosdm.inventory.repository.ImagenProductoRepository;
+import com.accesoriosdm.inventory.repository.MaterialRepository;
+import com.accesoriosdm.inventory.repository.ProductoRepository;
+import com.accesoriosdm.inventory.repository.PromocionProductoRepository;
+import com.accesoriosdm.inventory.repository.PromocionRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor

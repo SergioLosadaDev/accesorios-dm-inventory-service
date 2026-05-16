@@ -50,7 +50,8 @@ public class CategoriaService {
         Categoria categoria = new Categoria();
         categoria.setNombre(categoriaDTO.getNombre());
         categoria.setDescripcion(categoriaDTO.getDescripcion());
-        categoria.setEstado(categoriaDTO.getEstado() != null ? categoriaDTO.getEstado() : true);
+        Boolean estado = categoriaDTO.getEstado();
+        categoria.setEstado(estado != null ? estado : Boolean.TRUE);
         
         Categoria saved = categoriaRepository.save(categoria);
         log.info("Categoría creada con id: {}", saved.getIdCategoria());

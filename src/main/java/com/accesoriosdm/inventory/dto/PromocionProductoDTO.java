@@ -1,27 +1,12 @@
-package com.accesoriosdm.inventory.entity;
+package com.accesoriosdm.inventory.dto;
 
 import java.math.BigDecimal;
 
-import jakarta.persistence.*;
+public class PromocionProductoDTO {
 
-@Entity
-@Table(name = "promocion_producto", schema = "promociones")
-public class PromocionProducto {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_promocion_producto")
     private Integer idPromocionProducto;
-
-    @ManyToOne
-    @JoinColumn(name = "id_promocion")
-
-    private Promocion promocion;
-
-    @Column(name = "id_producto", nullable = false)
+    private Integer idPromocion;
     private Integer idProducto;
-
-    @Column(name = "precio_promocional", nullable = false, precision = 10, scale = 2)
     private BigDecimal precioPromocional;
 
     public Integer getIdPromocionProducto() {
@@ -32,12 +17,12 @@ public class PromocionProducto {
         this.idPromocionProducto = idPromocionProducto;
     }
 
-    public Promocion getPromocion() {
-        return promocion;
+    public Integer getIdPromocion() {
+        return idPromocion;
     }
 
-    public void setPromocion(Promocion promocion) {
-        this.promocion = promocion;
+    public void setIdPromocion(Integer idPromocion) {
+        this.idPromocion = idPromocion;
     }
 
     public Integer getIdProducto() {

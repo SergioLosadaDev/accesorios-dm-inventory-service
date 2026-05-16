@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "promocion", schema = "promociones")
@@ -40,7 +39,4 @@ public class Promocion {
 
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDateTime fechaCreacion = LocalDateTime.now();
-
-    @OneToMany(mappedBy = "promocion")
-    private List<PromocionProducto> promocionProductos;
 }

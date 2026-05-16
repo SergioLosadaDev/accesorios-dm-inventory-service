@@ -1,13 +1,17 @@
 package com.accesoriosdm.inventory.service;
 
 import com.accesoriosdm.inventory.dto.PromocionDTO;
+import com.accesoriosdm.inventory.dto.PromocionProductoDTO;
 import com.accesoriosdm.inventory.entity.Promocion;
+import com.accesoriosdm.inventory.entity.PromocionProducto;
 import com.accesoriosdm.inventory.repository.PromocionRepository;
+import com.accesoriosdm.inventory.repository.PromocionProductoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +21,7 @@ import java.util.stream.Collectors;
 public class PromocionService {
 
     private final PromocionRepository promocionRepository;
+    private final PromocionProductoRepository promocionProductoRepository;
 
     @Transactional(readOnly = true)
     public List<PromocionDTO> getAllPromociones() {
@@ -58,6 +63,29 @@ public class PromocionService {
     @Transactional
     public void deletePromocion(Integer id) {
         promocionRepository.deleteById(id);
+    }
+
+    @Transactional
+    public PromocionProductoDTO asignarPromocionAProducto(Integer idPromocion, Integer idProducto, BigDecimal precioPromocional) {
+        log.info("Asignando promoción {} al producto {}", idPromocion, idProducto);
+        
+        Promocion promocion = promocionRepository.findById(idPromocion)
+                .orElseThrow(() -> new RuntimeException("Promoción no encontrada"));
+
+        PromocionProducto pp = new PromocionProducto();
+        pp.setPromocion(promocion);
+        pp.setIdProducto(idProducto);
+        pp.setPrecioPromocional(precioPromocional);
+
+        PromocionProducto saved = promocionProductoRepository.save(pp);
+
+        PromocionProductoDTO dto = new PromocionProductoDTO();
+        dto.setIdPromocionProducto(saved.getIdPromocionProducto());
+        dto.setIdPromocion(saved.getPromocion().getIdPromocion());
+        dto.setIdProducto(saved.getIdProducto());
+        dto.setPrecioPromocional(saved.getPrecioPromocional());
+        
+        return dto;
     }
 
     private PromocionDTO convertToDTO(Promocion p) {

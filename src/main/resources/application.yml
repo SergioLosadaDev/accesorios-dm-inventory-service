@@ -1,7 +1,12 @@
 spring:
   application:
     name: inventory-service
-  
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+      
   datasource:
     url: jdbc:postgresql://accesorios-dm-postgres-qa:5432/accesorios_dm_db
     username: admin

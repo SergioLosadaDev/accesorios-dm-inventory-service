@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.accesoriosdm.inventory.dto.ImagenProductoDTO;
 import com.accesoriosdm.inventory.dto.ProductoDTO;
@@ -130,10 +131,32 @@ public class ProductoController {
     @PostMapping("/{productoId}/imagenes")
     public ResponseEntity<ImagenProductoDTO> addImagenToProducto(
             @PathVariable Integer productoId,
-            @RequestParam String urlImagen,
+            @RequestParam("file") MultipartFile file,
             @RequestParam(required = false, defaultValue = "1") Integer orden) {
-        log.info("POST /productos/{}/imagenes - Agregando imagen al producto", productoId);
-        ImagenProductoDTO imagen = productoService.addImagenToProducto(productoId, urlImagen, orden);
+
+        log.info("POST /productos/{}/imagenes - Subiendo imagen", productoId);
+
+        ImagenProductoDTO imagen =
+                productoService.addImagenToProducto(productoId, file, orden);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(imagen);
+    }
+
+    @PostMapping("/{productoId}/imagenes/upload")
+    public ResponseEntity<ImagenProductoDTO> uploadImagenProducto(
+            @PathVariable Integer productoId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(required = false, defaultValue = "1") Integer orden) {
+
+        log.info("POST /productos/{}/imagenes/upload - Subiendo imagen", productoId);
+
+        ImagenProductoDTO imagen =
+                productoService.uploadImagenProducto(
+                        productoId,
+                        file,
+                        orden
+             );
+
         return ResponseEntity.status(HttpStatus.CREATED).body(imagen);
     }
 

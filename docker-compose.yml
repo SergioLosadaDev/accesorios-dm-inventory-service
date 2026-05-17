@@ -12,6 +12,10 @@ services:
       - SPRING_DATASOURCE_PASSWORD=admin123
       - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
       - SERVER_PORT=8081
+    
+    volumes:
+      - ./uploads:/app/uploads
+    
     networks:
       - accesorios-dm-net-qa
 
@@ -19,3 +23,6 @@ networks:
   accesorios-dm-net-qa:
     external: true
     name: accesorios-dm-database_accesorios-network-qa
+
+volumes:
+  inventory-images:

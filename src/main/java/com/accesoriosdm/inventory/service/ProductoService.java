@@ -1,19 +1,41 @@
 package com.accesoriosdm.inventory.service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.accesoriosdm.inventory.dto.*;
-import com.accesoriosdm.inventory.entity.*;
+import com.accesoriosdm.inventory.dto.CategoriaDTO;
+import com.accesoriosdm.inventory.dto.ImagenProductoDTO;
+import com.accesoriosdm.inventory.dto.MaterialDTO;
+import com.accesoriosdm.inventory.dto.ProductoDTO;
+import com.accesoriosdm.inventory.dto.ProductoResumenDTO;
+import com.accesoriosdm.inventory.dto.PromocionDTO;
+import com.accesoriosdm.inventory.entity.Categoria;
+import com.accesoriosdm.inventory.entity.ImagenProducto;
+import com.accesoriosdm.inventory.entity.Material;
+import com.accesoriosdm.inventory.entity.Producto;
+import com.accesoriosdm.inventory.entity.Promocion;
 import com.accesoriosdm.inventory.exception.ResourceNotFoundException;
-import com.accesoriosdm.inventory.repository.*;
+import com.accesoriosdm.inventory.repository.CategoriaRepository;
+import com.accesoriosdm.inventory.repository.ImagenProductoRepository;
+import com.accesoriosdm.inventory.repository.MaterialRepository;
+import com.accesoriosdm.inventory.repository.ProductoRepository;
+import com.accesoriosdm.inventory.repository.PromocionRepository;
+import com.accesoriosdm.inventory.storage.StorageService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +50,10 @@ public class ProductoService {
     private final MaterialRepository materialRepository;
     private final ImagenProductoRepository imagenProductoRepository;
     private final PromocionRepository promocionRepository;
+    private final StorageService storageService;
+
+    @Value("${app.storage.images-path}")
+    private String imagesPath;
 
     // =========================
     // LISTADOS
@@ -174,22 +200,105 @@ public class ProductoService {
     }
 
     @Transactional
-    public ImagenProductoDTO addImagenToProducto(Integer productoId, String urlImagen, Integer orden) {
+    public ImagenProductoDTO addImagenToProducto(
+            Integer productoId,
+            MultipartFile file,
+            Integer orden) {
 
         Producto producto = productoRepository.findById(productoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
 
+        String imageUrl = storageService.saveProductImage(productoId, file);
+
         ImagenProducto img = new ImagenProducto();
-        img.setUrlImagen(urlImagen);
+        img.setUrlImagen(imageUrl);
         img.setOrden(orden != null ? orden : 1);
         img.setProducto(producto);
 
-        return mapImagen(imagenProductoRepository.save(img));
+        ImagenProducto saved = imagenProductoRepository.save(img);
+
+        return mapImagen(saved);
     }
 
     @Transactional
     public void deleteImagenFromProducto(Integer imagenId) {
-        imagenProductoRepository.deleteById(imagenId);
+
+        ImagenProducto imagen = imagenProductoRepository.findById(imagenId)
+                .orElseThrow(() -> new ResourceNotFoundException("Imagen no encontrada"));
+
+        storageService.deleteImage(imagen.getUrlImagen());
+
+        imagenProductoRepository.delete(imagen);
+    }
+    
+    @Transactional
+    public ImagenProductoDTO uploadImagenProducto(
+            Integer productoId,
+            MultipartFile file,
+            Integer orden) {
+
+        try {
+
+            Producto producto = productoRepository.findById(productoId)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("Producto no encontrado"));
+
+            // Crear carpeta del producto
+            Path carpetaProducto = Paths.get(
+                    imagesPath,
+                    "productos",
+                    productoId.toString()
+            );
+
+            Files.createDirectories(carpetaProducto);
+
+            // Obtener extensión
+            String nombreOriginal = file.getOriginalFilename();
+
+            String extension = "";
+
+            if (nombreOriginal != null && nombreOriginal.contains(".")) {
+                extension = nombreOriginal.substring(
+                        nombreOriginal.lastIndexOf(".")
+                );
+            }
+
+            // Nombre único
+            String nombreArchivo =
+                    UUID.randomUUID() + extension;
+
+            // Ruta final
+            Path rutaArchivo =
+                    carpetaProducto.resolve(nombreArchivo);
+
+            // Guardar archivo
+            Files.copy(
+                    file.getInputStream(),
+                    rutaArchivo,
+                    StandardCopyOption.REPLACE_EXISTING
+            );
+
+            // URL pública
+            String urlImagen =
+                    "/uploads/productos/"
+                            + productoId
+                            + "/"
+                            + nombreArchivo;
+
+            // Guardar BD
+            ImagenProducto imagen = new ImagenProducto();
+            imagen.setProducto(producto);
+            imagen.setUrlImagen(urlImagen);
+            imagen.setOrden(orden != null ? orden : 1);
+
+            ImagenProducto saved =
+                    imagenProductoRepository.save(imagen);
+
+            return mapImagen(saved);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error al guardar imagen", e);
+        }
     }
 
     // =========================

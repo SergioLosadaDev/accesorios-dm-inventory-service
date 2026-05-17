@@ -16,8 +16,8 @@ services:
       - SERVER_PORT=8082
 
     volumes:
-      - inventory-images:/app/uploads
-
+      - ./uploads:/app/uploads
+      
     networks:
       - accesorios-dm-net-dev
 

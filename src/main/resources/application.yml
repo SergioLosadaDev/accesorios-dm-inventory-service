@@ -33,7 +33,10 @@ server:
 # Configuración de almacenamiento de imágenes
 app:
   storage:
-    images-path: ./src/main/resources/static/images/products
+    images-path: /app/uploads/productos
+
+file:
+  upload-dir: uploads
 
 logging:
   level:

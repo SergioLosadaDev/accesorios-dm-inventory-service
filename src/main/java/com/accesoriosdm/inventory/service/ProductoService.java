@@ -138,7 +138,8 @@ public class ProductoService {
         producto.setDescripcion(request.getDescripcion());
         producto.setPrecio(request.getPrecio());
         producto.setStock(request.getStock());
-        producto.setEstado(request.getEstado() != null ? request.getEstado() : true);
+        Boolean estadoReq = request.getEstado();
+        producto.setEstado(Boolean.TRUE.equals(estadoReq));
         producto.setCategoria(categoria);
         producto.setMaterial(material);
 
@@ -148,7 +149,8 @@ public class ProductoService {
             request.getImagenes().forEach(imgDTO -> {
                 ImagenProducto img = new ImagenProducto();
                 img.setUrlImagen(imgDTO.getUrlImagen());
-                img.setOrden(imgDTO.getOrden() != null ? imgDTO.getOrden() : 1);
+                Integer orden = imgDTO.getOrden();
+                img.setOrden(orden != null ? orden : 1);
                 img.setProducto(saved);
                 imagenProductoRepository.save(img);
             });
@@ -173,7 +175,8 @@ public class ProductoService {
         producto.setDescripcion(request.getDescripcion());
         producto.setPrecio(request.getPrecio());
         producto.setStock(request.getStock());
-        producto.setEstado(request.getEstado() != null ? request.getEstado() : true);
+        Boolean estadoReq = request.getEstado();
+        producto.setEstado(Boolean.TRUE.equals(estadoReq));
         producto.setCategoria(categoria);
         producto.setMaterial(material);
 

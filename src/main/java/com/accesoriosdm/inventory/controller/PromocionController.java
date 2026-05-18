@@ -98,4 +98,20 @@ public class PromocionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
+    @DeleteMapping("/{idPromocion}/productos/{idProducto}")
+    public ResponseEntity<Void> desasociarPromocionDeProducto(
+            @PathVariable Integer idPromocion,
+            @PathVariable Integer idProducto) {
+
+        log.info(
+    "DELETE /api/v1/promociones/{}/productos/{} - Desasociando promoción de producto",
+            idPromocion,
+            idProducto
+        );
+
+        promocionService.desasociarPromocionDeProducto(idPromocion, idProducto);
+
+        return ResponseEntity.noContent().build();
+    }
+
 }

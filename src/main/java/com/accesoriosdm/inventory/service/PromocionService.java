@@ -88,6 +88,18 @@ public class PromocionService {
         return dto;
     }
 
+    @Transactional
+    public void desasociarPromocionDeProducto(Integer idPromocion, Integer idProducto) {
+
+        log.info("Desasociando promoción {} del producto {}", idPromocion, idProducto);
+
+        PromocionProducto relacion = promocionProductoRepository
+                .findByPromocion_IdPromocionAndIdProducto(idPromocion, idProducto)
+                .orElseThrow(() -> new RuntimeException("Relación promoción-producto no encontrada"));
+
+        promocionProductoRepository.delete(relacion);
+    }
+
     private PromocionDTO convertToDTO(Promocion p) {
         PromocionDTO dto = new PromocionDTO();
         dto.setIdPromocion(p.getIdPromocion());

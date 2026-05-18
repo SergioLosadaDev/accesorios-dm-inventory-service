@@ -1,7 +1,6 @@
 package com.accesoriosdm.inventory.repository;
 
 import com.accesoriosdm.inventory.entity.Promocion;
-import com.accesoriosdm.inventory.entity.PromocionProducto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

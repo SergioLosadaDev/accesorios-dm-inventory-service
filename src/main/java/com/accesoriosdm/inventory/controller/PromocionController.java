@@ -79,8 +79,7 @@ public class PromocionController {
     @PostMapping("/{idPromocion}/productos/{idProducto}")
     public ResponseEntity<PromocionProductoDTO> asignarPromocionAProducto(
             @PathVariable Integer idPromocion,
-            @PathVariable Integer idProducto,
-            @RequestBody PrecioPromocionalRequest request) {
+            @PathVariable Integer idProducto) {
 
         log.info(
             "POST /api/v1/promociones/{}/productos/{} - Asignando promoción a producto",
@@ -89,11 +88,7 @@ public class PromocionController {
         );
 
         PromocionProductoDTO result =
-                promocionService.asignarPromocionAProducto(
-                        idPromocion,
-                        idProducto,
-                        request.getPrecioPromocional()
-                );
+                promocionService.asignarPromocionAProducto(idPromocion, idProducto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }

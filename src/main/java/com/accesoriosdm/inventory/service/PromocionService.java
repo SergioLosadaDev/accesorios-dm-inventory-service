@@ -2,9 +2,11 @@ package com.accesoriosdm.inventory.service;
 
 import com.accesoriosdm.inventory.dto.PromocionDTO;
 import com.accesoriosdm.inventory.dto.PromocionProductoDTO;
+import com.accesoriosdm.inventory.entity.Producto;
 import com.accesoriosdm.inventory.entity.Promocion;
 import com.accesoriosdm.inventory.entity.PromocionProducto;
 import com.accesoriosdm.inventory.repository.PromocionRepository;
+import com.accesoriosdm.inventory.repository.ProductoRepository;
 import com.accesoriosdm.inventory.repository.PromocionProductoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ public class PromocionService {
 
     private final PromocionRepository promocionRepository;
     private final PromocionProductoRepository promocionProductoRepository;
+    private final ProductoRepository productoRepository;
 
     @Transactional(readOnly = true)
     public List<PromocionDTO> getAllPromociones() {
@@ -66,11 +69,21 @@ public class PromocionService {
     }
 
     @Transactional
-    public PromocionProductoDTO asignarPromocionAProducto(Integer idPromocion, Integer idProducto, BigDecimal precioPromocional) {
-        log.info("Asignando promoción {} al producto {}", idPromocion, idProducto);
-        
+    public PromocionProductoDTO asignarPromocionAProducto(Integer idPromocion, Integer idProducto) {
+
         Promocion promocion = promocionRepository.findById(idPromocion)
                 .orElseThrow(() -> new RuntimeException("Promoción no encontrada"));
+
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        BigDecimal precioBase = producto.getPrecio();
+
+        BigDecimal descuento = promocion.getPorcentajeDescuento();
+
+        BigDecimal precioPromocional = precioBase
+                .multiply(BigDecimal.valueOf(100 - descuento.doubleValue()))
+                .divide(BigDecimal.valueOf(100));
 
         PromocionProducto pp = new PromocionProducto();
         pp.setPromocion(promocion);
@@ -81,10 +94,10 @@ public class PromocionService {
 
         PromocionProductoDTO dto = new PromocionProductoDTO();
         dto.setIdPromocionProducto(saved.getIdPromocionProducto());
-        dto.setIdPromocion(saved.getPromocion().getIdPromocion());
-        dto.setIdProducto(saved.getIdProducto());
-        dto.setPrecioPromocional(saved.getPrecioPromocional());
-        
+        dto.setIdPromocion(promocion.getIdPromocion());
+        dto.setIdProducto(idProducto);
+        dto.setPrecioPromocional(precioPromocional);
+
         return dto;
     }
 

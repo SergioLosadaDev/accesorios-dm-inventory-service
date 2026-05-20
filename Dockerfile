@@ -16,10 +16,10 @@ RUN chown appuser:appgroup app.jar
 
 USER appuser
 
-EXPOSE 8082
+EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=5 \
-  CMD wget -qO- http://localhost:8082/api/v1/health || exit 1
+  CMD wget -qO- http://localhost:8080/api/v1/health || exit 1
 
 ENTRYPOINT ["java", \
   "-XX:+UseContainerSupport", \
